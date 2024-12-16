@@ -139,7 +139,10 @@ export class GameOfLife {
   }
 
   public toggleCell(row: number, col: number): void {
-    this.grid[row][col] = (this.grid[row][col] + 1) % 3; // Cycle between states (0, 1, 2)
+    if (this.infectionEnabled)
+      this.grid[row][col] = (this.grid[row][col] + 1) % 3; // Cycle between states (0, 1, 2)
+    else
+      this.grid[row][col] = (this.grid[row][col] + 1) % 2; // Cycle between states (0, 1)
   }
 
   public getGrid(): Grid {
