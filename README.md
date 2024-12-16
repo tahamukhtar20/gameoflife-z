@@ -70,7 +70,7 @@ npm start
 
 This will launch the game in your default browser.
 
-Or visit the following ([https://gameoflife-nine.vercel.app](https://gameoflife-nine.vercel.app))[URL]
+Or visit the following [URL](https://gameoflife-nine.vercel.app)
 
 ---
 
