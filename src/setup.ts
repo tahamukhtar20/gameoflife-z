@@ -157,12 +157,13 @@ export class GameOfLife {
 export function renderGrid(canvas: HTMLCanvasElement, grid: Grid): void {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
-
-  const cellSize = 20;
-  canvas.width = grid[0].length * cellSize;
+  canvas.width = 700
+  const cellSize = canvas.width / grid[0].length;
   canvas.height = grid.length * cellSize;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 0.2;
 
   grid.forEach((row, rowIndex) => {
     row.forEach((cell, colIndex) => {

@@ -40,7 +40,6 @@ rowsRange.addEventListener("input", () => {
   }
   game = new GameOfLife(rows, cols);
   renderGrid(canvas, game.getGrid());
-
 });
 
 colsRange.addEventListener("input", () => {
@@ -108,10 +107,8 @@ randomPatternButton.addEventListener("click", () => {
 toggleInfection.addEventListener("change", () => {
   if (toggleInfection.checked) {
     game.infectionEnabled = true;
-    game.reset();
   } else {
     game.infectionEnabled = false;
-    game.reset();
   }
   update();
 });
