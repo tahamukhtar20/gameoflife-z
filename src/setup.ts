@@ -2,12 +2,14 @@ type Grid = number[][];
 
 export class GameOfLife {
   private grid: Grid;
-  private rows: number;
-  private cols: number;
+  public rows: number;
+  public cols: number;
+  public infectionEnabled: boolean; // Flag to enable/disable infection behavior
 
-  constructor(rows: number, cols: number) {
+  constructor(rows: number, cols: number, infectionEnabled: boolean = false) {
     this.rows = rows;
     this.cols = cols;
+    this.infectionEnabled = infectionEnabled; // Set default value to true (infection enabled)
     this.grid = this.createGrid();
   }
 
@@ -17,6 +19,49 @@ export class GameOfLife {
 
   public reset(): void {
     this.grid = this.createGrid();
+  }
+
+  public placeRandomPatterns(): void {
+    this.placePattern(this.glider(), 5);
+    this.placePattern(this.blinker(), 5);
+    this.placePattern(this.rPentomino(), 5);
+  }
+
+  private placePattern(pattern: number[][], amount: number): void {
+    for (let i = 0; i < amount; i++) {
+      const startRow = Math.floor(Math.random() * (this.rows - pattern.length));
+      const startCol = Math.floor(Math.random() * (this.cols - pattern[0].length));
+
+      for (let row = 0; row < pattern.length; row++) {
+        for (let col = 0; col < pattern[0].length; col++) {
+          this.grid[startRow + row][startCol + col] = pattern[row][col];
+        }
+      }
+    }
+  }
+
+  private glider(): number[][] {
+    return [
+      [0, 0, 1],
+      [1, 0, 1],
+      [0, 1, 1]
+    ];
+  }
+
+  private blinker(): number[][] {
+    return [
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 0]
+    ];
+  }
+
+  private rPentomino(): number[][] {
+    return [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 1, 0]
+    ];
   }
 
   public nextGeneration(): void {
@@ -29,20 +74,33 @@ export class GameOfLife {
         if (this.grid[row][col] === 1) { // Alive
           if (aliveNeighbors === 2 || aliveNeighbors === 3) {
             newGrid[row][col] = 1; // Survive
-          } else if (infectedNeighbors > aliveNeighbors) {
+          } else if (this.infectionEnabled && infectedNeighbors > aliveNeighbors) {
             newGrid[row][col] = 2; // Become infected
-          } else {
+          } else if (aliveNeighbors === 0) {
             newGrid[row][col] = 0; // Die
           }
+          if (Math.random() < 0.02 && this.infectionEnabled) {
+            newGrid[row][col] = 2; // Become infected
+          }
         } else if (this.grid[row][col] === 2) { // Infected
-          if (infectedNeighbors + aliveNeighbors === 0) {
-            newGrid[row][col] = 0; // Die
-          } else if (infectedNeighbors === aliveNeighbors) {
-            newGrid[row][col] = 2; // Stay infected
-          } else if (aliveNeighbors > infectedNeighbors) {
-            newGrid[row][col] = 1; // Recover to alive
+          if (this.infectionEnabled) {
+            if (infectedNeighbors + aliveNeighbors === 0) {
+              newGrid[row][col] = 0; // Die
+            } else if (infectedNeighbors === aliveNeighbors) {
+              newGrid[row][col] = 2; // Stay infected
+            } else if (aliveNeighbors > infectedNeighbors) {
+              newGrid[row][col] = 1; // Recover to alive
+            } else {
+              newGrid[row][col] = 0; // Die
+            }
+            if (Math.random() < 0.02) {
+              newGrid[row][col] = 1; // Recover to alive
+            }
+            if (Math.random() < 0.1) {
+              newGrid[row][col] = 0; // Die
+            }
           } else {
-            newGrid[row][col] = 0; // Die
+            newGrid[row][col] = 1; // Stay alive if infection is disabled
           }
         } else { // Dead
           if (aliveNeighbors === 3) {
@@ -89,17 +147,10 @@ export class GameOfLife {
   }
 
   public randomize(): void {
-    this.grid = this.grid.map(row => row.map(() => Math.floor(Math.random() * 3))); // Randomize between 0, 1, 2
-  }
-
-  public randomize20(): void {
-    const startRow = Math.floor(this.rows / 2) - 10;
-    const startCol = Math.floor(this.cols / 2) - 10;
-    for (let row = startRow; row < startRow + 20; row++) {
-      for (let col = startCol; col < startCol + 20; col++) {
-        this.grid[row][col] = Math.floor(Math.random() * 3);
-      }
-    }
+    if (this.infectionEnabled)
+      this.grid = this.grid.map(row => row.map(() => Math.floor(Math.random() * 3)));
+    else
+      this.grid = this.grid.map(row => row.map(() => Math.floor(Math.random() * 2)));
   }
 }
 

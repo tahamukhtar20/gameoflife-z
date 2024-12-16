@@ -6,12 +6,21 @@ const startButton = document.getElementById("startButton") as HTMLButtonElement;
 const stopButton = document.getElementById("stopButton") as HTMLButtonElement;
 const resetButton = document.getElementById("resetButton") as HTMLButtonElement;
 const randomizeButton = document.getElementById("randomizeButton") as HTMLButtonElement;
-const randomize20Button = document.getElementById("randomize20Button") as HTMLButtonElement;
+const randomPatternButton = document.getElementById("randomPatternButton") as HTMLButtonElement;
 const speedRange = document.getElementById("speedRange") as HTMLInputElement;
 const speedValue = document.getElementById("speedValue") as HTMLSpanElement;
+const toggleInfection = document.getElementById("toggleInfection") as HTMLInputElement;
+
+// Sliders for rows and columns
+const rowsRange = document.getElementById("rowsRange") as HTMLInputElement;
+const colsRange = document.getElementById("colsRange") as HTMLInputElement;
+const rowsValue = document.getElementById("rowsValue") as HTMLSpanElement;
+const colsValue = document.getElementById("colsValue") as HTMLSpanElement;
 
 let interval: any = null;
 let speed = parseInt(speedRange.value);
+let rows = parseInt(rowsRange.value);
+let cols = parseInt(colsRange.value);
 
 speedRange.addEventListener("input", () => {
   speed = parseInt(speedRange.value);
@@ -23,9 +32,31 @@ speedRange.addEventListener("input", () => {
   }
 });
 
+rowsRange.addEventListener("input", () => {
+  rows = parseInt(rowsRange.value);
+  rowsValue.textContent = rows.toString();
+  if (interval) {
+    clearInterval(interval);
+    interval = null;
+  }
+  game.reset();
+  game.rows = rows;
+  update();
 
-const rows = 30;
-const cols = 75;
+});
+
+colsRange.addEventListener("input", () => {
+  cols = parseInt(colsRange.value);
+  colsValue.textContent = cols.toString();
+  if (interval) {
+    clearInterval(interval);
+    interval = null;
+  }
+  game.reset();
+  game.cols = cols;
+  update();
+});
+
 const game = new GameOfLife(rows, cols);
 
 function update() {
@@ -74,8 +105,17 @@ randomizeButton.addEventListener("click", () => {
   update();
 });
 
-randomize20Button.addEventListener("click", () => {
-  game.randomize20();
+randomPatternButton.addEventListener("click", () => {
+  game.placeRandomPatterns();
+  update();
+});
+
+toggleInfection.addEventListener("change", () => {
+  if (toggleInfection.checked) {
+    game.infectionEnabled = true;
+  } else {
+    game.infectionEnabled = false;
+  }
   update();
 });
 
