@@ -10,8 +10,6 @@ const randomPatternButton = document.getElementById("randomPatternButton") as HT
 const speedRange = document.getElementById("speedRange") as HTMLInputElement;
 const speedValue = document.getElementById("speedValue") as HTMLSpanElement;
 const toggleInfection = document.getElementById("toggleInfection") as HTMLInputElement;
-
-// Sliders for rows and columns
 const rowsRange = document.getElementById("rowsRange") as HTMLInputElement;
 const colsRange = document.getElementById("colsRange") as HTMLInputElement;
 const rowsValue = document.getElementById("rowsValue") as HTMLSpanElement;
@@ -21,6 +19,7 @@ let interval: any = null;
 let speed = parseInt(speedRange.value);
 let rows = parseInt(rowsRange.value);
 let cols = parseInt(colsRange.value);
+let game = new GameOfLife(rows, cols);
 
 speedRange.addEventListener("input", () => {
   speed = parseInt(speedRange.value);
@@ -39,9 +38,8 @@ rowsRange.addEventListener("input", () => {
     clearInterval(interval);
     interval = null;
   }
-  game.reset();
-  game.rows = rows;
-  update();
+  game = new GameOfLife(rows, cols);
+  renderGrid(canvas, game.getGrid());
 
 });
 
@@ -52,12 +50,9 @@ colsRange.addEventListener("input", () => {
     clearInterval(interval);
     interval = null;
   }
-  game.reset();
-  game.cols = cols;
-  update();
+  game = new GameOfLife(rows, cols);
+  renderGrid(canvas, game.getGrid());
 });
-
-const game = new GameOfLife(rows, cols);
 
 function update() {
   renderGrid(canvas, game.getGrid());
@@ -113,8 +108,10 @@ randomPatternButton.addEventListener("click", () => {
 toggleInfection.addEventListener("change", () => {
   if (toggleInfection.checked) {
     game.infectionEnabled = true;
+    game.reset();
   } else {
     game.infectionEnabled = false;
+    game.reset();
   }
   update();
 });
