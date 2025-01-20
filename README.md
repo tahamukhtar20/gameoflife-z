@@ -2,6 +2,7 @@
 
 This project is a dynamic implementation of Conway's Game of Life with additional custom rules for an infection mechanic. The simulation is built with TypeScript and features configurable grid states, random patterns, and an interactive grid rendering system.
 
+Hosted at: [tahamukhtar20.github.io/gameoflife-z](https://tahamukhtar20.github.io/gameoflife-z)
 ---
 
 ## Features
@@ -69,8 +70,6 @@ npm start
 ```
 
 This will launch the game in your default browser.
-
-Or visit the following [URL](https://gameoflife-nine.vercel.app)
 
 ---
 
